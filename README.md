@@ -4,6 +4,10 @@
 
 Built for the **Relate by Neo4j Hackathon 2026**. Uses [Relate](https://relatedb.ai/), Neo4j's open-source embedded graph database for AI agents.
 
+## Demo video (1:58)
+
+[▶ Watch the narrated demo](https://github.com/cw20051219-commits/talent-graph-relate/blob/master/outputs/demo.mp4) — a 2-minute guided walkthrough covering the problem, graph build, two live Cypher queries and the agent skill. Voice-over generated with edge-tts; slides rendered with PIL; assembled with ffmpeg (reproducible via `python scripts/make_video.py`). The raw file is `outputs/demo.mp4`.
+
 ## The idea
 
 `deepseek-talent-map` shipped a cleaned snapshot of 27 public DeepSeek papers: 409 de-duplicated byline authors, 328 in the R&E pool, plus co-author edges, communities and an author×topic matrix. Useful — but flat CSV files can only answer pre-baked questions.

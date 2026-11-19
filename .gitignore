@@ -2,3 +2,7 @@
 __pycache__/
 *.pyc
 .venv/
+# video intermediates (slides, voice mp3s, per-scene clips) - only final demo.mp4 is shipped
+outputs/_video_build/
+# local scratch
+tts_test.mp3
