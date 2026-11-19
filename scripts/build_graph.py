@@ -38,10 +38,18 @@ def read_rows(name: str) -> list[dict[str, str]]:
         return list(csv.DictReader(f))
 
 
-def split_cn(value: str) -> list[str]:
-    """Split Chinese/ASCII delimited lists on both 、 and ； and /."""
+def split_cn(value: str, slash: bool = False) -> list[str]:
+    """Split delimited lists. Default separators: 、 and ；/;.
+
+    `slash=True` additionally splits on ' / ' — needed for the communities
+    top_authors column (e.g. "Chengqi Deng / Bingxuan Wang"), but NOT for
+    topic names like "推理/RL" where the slash is part of the value.
+    """
+    text = (value or "").replace("；", ";")
+    if slash:
+        text = text.replace(" / ", ";")
     out: list[str] = []
-    for part in (value or "").replace("；", ";").split("、"):
+    for part in text.split("、"):
         for p in part.split(";"):
             p = p.strip()
             if p:
@@ -89,7 +97,7 @@ def build(conn, progress: bool = True) -> dict[str, int]:
                 "summary": c["direction_summary"].strip(),
             },
         )
-        for author in split_cn(c["top_authors"]):
+        for author in split_cn(c["top_authors"], slash=True):
             conn.execute(
                 """MATCH (a:Author {name: $an}), (g:Community {letter: $letter})
                    MERGE (a)-[:MEMBER_OF]->(g)""",

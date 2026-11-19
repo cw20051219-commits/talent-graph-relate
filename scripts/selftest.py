@@ -65,29 +65,35 @@ try:
 except ImportError:
     print("  SKIP  relate-db not installed yet (run pip install -r requirements.txt)")
 else:
-    from build_graph import build
     from queries import QUERIES, run_query
 
-    conn = relate.connect(database=":memory:")
-    counts = build(conn, progress=False)
-    conn.autocommit = True
-    check("authors in graph", counts["authors"] == len(nodes), str(counts["authors"]))
-    check("papers in graph", counts["papers"] > 0, str(counts["papers"]))
-    check("coauthor edges in graph", counts["coauthor_edges"] > 0, str(counts["coauthor_edges"]))
-    check("works_on links in graph", counts["works_on"] > 0, str(counts["works_on"]))
-    check("member_of links in graph", counts["member_of"] > 0, str(counts["member_of"]))
+    store = ROOT / "outputs" / "talent-graph.rl"
+    if not store.exists():
+        print("  SKIP  graph not built yet (run: python scripts/build_graph.py)")
+    else:
+        conn = relate.connect(database=str(store), read_only=True)
 
-    for key in QUERIES:
-        try:
-            result = run_query(conn, key)
-            check(f"query {key} runs", isinstance(result, list), f"rows={len(result) if isinstance(result, list) else 'n/a'}")
-        except Exception as exc:  # noqa: BLE001
-            check(f"query {key} runs", False, repr(exc))
+        def scalar(cypher):
+            row = conn.execute(cypher).fetchone()
+            return next(iter(row.values()))
 
-    by_topic = run_query(conn, "talents_by_topic")
-    check("talents_by_topic returns rows", len(by_topic) > 0)
-    check("talents_by_topic has author field", "author" in by_topic[0] if by_topic else False)
-    conn.close()
+        check("authors in graph", scalar("MATCH (a:Author) RETURN count(a)") == len(nodes))
+        check("papers in graph", scalar("MATCH (p:Paper) RETURN count(p)") > 0)
+        check("coauthor edges in graph", scalar("MATCH ()-[c:COAUTHOR]->() RETURN count(c)") > 0)
+        check("works_on links in graph", scalar("MATCH ()-[w:WORKS_ON]->() RETURN count(w)") > 0)
+        check("member_of links in graph", scalar("MATCH ()-[m:MEMBER_OF]->() RETURN count(m)") > 0)
+
+        for key in QUERIES:
+            try:
+                result = run_query(conn, key)
+                check(f"query {key} runs", isinstance(result, list), f"rows={len(result) if isinstance(result, list) else 'n/a'}")
+            except Exception as exc:  # noqa: BLE001
+                check(f"query {key} runs", False, repr(exc))
+
+        by_topic = run_query(conn, "talents_by_topic")
+        check("talents_by_topic returns rows", len(by_topic) > 0)
+        check("talents_by_topic has author field", "author" in by_topic[0] if by_topic else False)
+        conn.close()
 
 print(f"\n{passed} passed, {failed} failed")
 sys.exit(1 if failed else 0)

@@ -1,5 +1,4 @@
-outputs/*.rl
-!outputs/.gitkeep
+# ship the built graph so judges can query immediately; build script regenerates it
 __pycache__/
 *.pyc
 .venv/

@@ -34,7 +34,7 @@ relate --database ./outputs/talent-graph.rl --read-only --mode envelope \
 ```bash
 relate --database ./outputs/talent-graph.rl --read-only --mode envelope \
   --param from="Damai Dai" --param to="Qihao Zhu" \
-  'MATCH p = (a:Author {name: $from})-[:COAUTHOR*1..4]-(b:Author {name: $to})
+  'MATCH p = (a:Author {name: $from})-[:COAUTHOR*1..3]-(b:Author {name: $to})
    RETURN [n IN nodes(p) | n.name] AS path, length(p) AS hops
    ORDER BY hops LIMIT 5'
 ```

@@ -55,9 +55,9 @@ QUERIES: dict[str, dict[str, Any]] = {
         "params": {"name": "Chong Ruan", "limit": 10},
     },
     "multi_hop_path": {
-        "description": "Shortest collaboration path between two authors (up to 4 hops).",
+        "description": "Shortest collaboration path between two authors (up to 3 hops; 4 hops explodes on this dense graph).",
         "sql": """
-            MATCH p = (a:Author {name: $from})-[:COAUTHOR*1..4]-(b:Author {name: $to})
+            MATCH p = (a:Author {name: $from})-[:COAUTHOR*1..3]-(b:Author {name: $to})
             RETURN [n IN nodes(p) | n.name] AS path, length(p) AS hops
             ORDER BY hops
             LIMIT 5

@@ -26,7 +26,7 @@ Relations    (Author)-[:COAUTHOR {weight,topics}]->(Author)   both directions
              (Author)-[:AUTHORED]->(Paper)
 ```
 
-74 co-author nodes, 934 directed edges, 7 communities, 7 technical directions, dozens of papers — all in a single portable `outputs/talent-graph.rl`.
+The built graph contains **73 Author nodes, 1,868 directed COAUTHOR edges, 509→258 de-duplicated WORKS_ON links, 19 MEMBER_OF links, 7 communities, 7 topics and 22 named papers** — all in a single portable `outputs/talent-graph.rl`. (The underlying source snapshot covers 27 papers / 409 byline authors; the graph uses the co-author-network subset where edges are actually recorded.)
 
 ## Why it fits the judging criteria
 
@@ -57,7 +57,9 @@ relate --version     # 1.1.0 or newer
 pip install -r requirements.txt
 ```
 
-### 3. Build the graph
+### 3. Build the graph (optional — already included)
+
+The repo ships a pre-built `outputs/talent-graph.rl`, so you can query immediately (skip to step 4). To regenerate it from the CSVs:
 
 ```bash
 python scripts/build_graph.py
