@@ -13,13 +13,23 @@
 
 **没报名 = 后面全白做，所以先做这一步。**
 
-## 第 2 步：装 Relate（一条命令）
+## 第 2 步：装 Relate 命令行工具（可选，作品不依赖它）
 
-项目目录是 `D:\迅雷下载\2026-11-19-09-49-26\talent-graph-relate`。
+**先说清楚：这一步是可选的。** 作品 100% 用 Python 包（`relate-db`）跑，自检和查询都走 Python，评委也是跑 Python 脚本。这个 CLI 只是让你能在命令行手敲 `relate` 玩一下，不装也完全不影响参赛。
 
-- Windows：打开 PowerShell，运行
-  `powershell -ExecutionPolicy ByPass -c "irm https://relatedb.ai/install.ps1 | iex"`
-- 然后运行 `relate --version`，看到 `1.1.0` 或更高就对了。
+✅ **你这台机器已经装好了**（2026-11-19）：`relate.exe` 在 `C:\Users\wen\AppData\Local\Programs\relate`，已加入用户 PATH，版本 `Relate v1.1.0`。**重新打开一个 PowerShell 窗口**（让 PATH 生效），运行 `relate --version` 应看到 `Relate v1.1.0`。
+
+如果换机器要重装：官方命令是
+`powershell -ExecutionPolicy ByPass -c "irm https://relatedb.ai/install.ps1 | iex"`
+
+⚠️ 但这台机器连不上 GitHub（官方脚本要去 GitHub 下二进制），所以当时是这么绕过去的，供换机器时参考：
+1. 从 `https://relatedb.ai/releases.json` 拿到版本号和资产名（`relate-windows-amd64.exe`）。
+2. 从 `https://relatedb.ai/install.ps1` 旁的官方哈希源或 `gh-proxy.com` 代理下载 exe（约 35MB）：
+   `curl -L "https://gh-proxy.com/https://github.com/relatedb/relate/releases/download/v1.1.0/relate-windows-amd64.exe" -o relate.exe`
+3. 校验 SHA256，v1.1.0 的官方值是 `796b78c82d05636a18d7d154d5839cb0b44f3d41eafb04482113d83d1107231f`。
+4. 把 exe 放到一个目录，把这个目录加进用户 PATH。
+
+再强调一次：**以上全跳过也能参赛**，直接做第 3、4 步即可。
 
 ## 第 3 步：装 Python 依赖（一条命令）
 
